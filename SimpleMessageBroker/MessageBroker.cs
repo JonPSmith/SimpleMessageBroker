@@ -6,13 +6,14 @@ using System.Collections.Generic;
 using System.Reflection;
 using NetCore.AutoRegisterDi;
 
-namespace SimpleMessageBus
+namespace SimpleMessageBroker
 {
     /// <summary>
-    /// This service must be registered as a singleton
+    /// This is a super-simple message broker that lets one side ask for a certain class
+    /// and the registered provider will return it.
     /// </summary>
     [RegisterAsSingleton]
-    public class MessageBus
+    public class MessageBroker : IMessageBroker
     {
         private readonly Dictionary<Type, Func<string, object>> _providers = new Dictionary<Type, Func<string, object>>();
 
@@ -23,15 +24,19 @@ namespace SimpleMessageBus
         /// <param name="getDataFunc"></param>
         public void RegisterProvider<T>(Func<string, T> getDataFunc) where T : class
         {
-            var providerTypeName = typeof(T).FullName;
             if (_providers.ContainsKey(typeof(T)))
                 throw new ArgumentException(
                     $"A provider for type {typeof(T).Name} has already be registered .");
 
-            var providerAssemblyName = Assembly.GetCallingAssembly().GetName().Name;
             _providers[typeof(T)] = getDataFunc;
         }
 
+        /// <summary>
+        /// This asks for an item of type T
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="dataString">optional: will be sent to the provider</param>
+        /// <returns>Type with data. Simple error response is to return null</returns>
         public T AskFor<T>(string dataString = null) where T : class
         {
             if (!_providers.ContainsKey(typeof(T)))
