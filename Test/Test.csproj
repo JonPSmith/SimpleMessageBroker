@@ -20,7 +20,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\SimpleMessageBus\SimpleMessageBus.csproj" />
+    <ProjectReference Include="..\SimpleMessageBroker\SimpleMessageBroker.csproj" />
   </ItemGroup>
 
 </Project>
