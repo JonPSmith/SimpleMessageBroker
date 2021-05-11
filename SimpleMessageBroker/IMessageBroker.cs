@@ -8,12 +8,18 @@ namespace SimpleMessageBroker
     public interface IMessageBroker
     {
         /// <summary>
-        /// This registers a function that can be called by the AskFor
+        /// This created communication link and registers a function to provide data
         /// </summary>
         /// <typeparam name="T">The type </typeparam>
         /// <param name="commsName">The name of the communication link</param>
         /// <param name="getDataFunc">A function that will provide the data when asked</param>
         void RegisterProvider<T>(string commsName, Func<string, T> getDataFunc) where T : class;
+
+        /// <summary>
+        /// This removes a provider for a communication link
+        /// </summary>
+        /// <param name="commsName">The name of the communication link</param>
+        void RemoveProvider(string commsName);
 
         /// <summary>
         /// This asks for an item of type T

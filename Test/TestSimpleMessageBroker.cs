@@ -1,5 +1,6 @@
 using System;
 using System.Threading;
+using System.Threading.Tasks;
 using SimpleMessageBroker;
 using Xunit;
 
@@ -29,6 +30,54 @@ namespace Test
 
             //VERIFY
             Assert.Equal("hello", result.Data);
+        }
+
+
+        [Fact]
+        public async Task TestRegisterAsyncValue()
+        {
+            //SETUP
+            var broker = new MessageBroker();
+
+            //ATTEMPT
+            broker.RegisterProvider("ClassToSend", async x =>
+            {
+                await Task.Delay(1);
+                return new ClassToSend(x);
+            });
+            var result = broker.AskFor<ClassToSend>("ClassToSend", "hello");
+
+            //VERIFY
+            Assert.Equal("hello", result.Data);
+        }
+
+        [Fact]
+        public void TestAskNoRegister()
+        {
+            //SETUP
+            var broker = new MessageBroker();
+
+            //ATTEMPT
+            var ex = Assert.Throws<ArgumentException>(() => broker.AskFor<ClassToSend>("ClassToSend", "hello"));
+
+            //VERIFY
+            Assert.Equal("There is no provider registered for ClassToSend.", ex.Message);
+        }
+
+        [Fact]
+        public void TestRemoveProvider()
+        {
+            //SETUP
+            var broker = new MessageBroker();
+            broker.RegisterProvider("ClassToSend", x => new ClassToSend(x));
+            broker.AskFor<ClassToSend>("ClassToSend", "hello");
+
+            //ATTEMPT
+            broker.RemoveProvider("ClassToSend");
+            var ex = Assert.Throws<ArgumentException>(() => broker.AskFor<ClassToSend>("ClassToSend", "hello"));
+
+            //VERIFY
+            Assert.Equal("There is no provider registered for ClassToSend.", ex.Message);
         }
 
         [Fact]
