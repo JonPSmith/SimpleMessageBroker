@@ -14,7 +14,7 @@ namespace SimpleMessageBroker
     /// and the registered provider will return it.
     /// </summary>
     [RegisterAsSingleton]
-    public class MessageBroker 
+    public class MessageBroker : IMessageBroker
     {
         private readonly Dictionary<string, ProviderInfo> _providers = new Dictionary<string, ProviderInfo>();
 
@@ -23,7 +23,7 @@ namespace SimpleMessageBroker
         /// </summary>
         /// <typeparam name="T">The type </typeparam>
         /// <param name="commsName">The name of the communication link</param>
-        /// <param name="getDataFunc"></param>
+        /// <param name="getDataFunc">A function that will provide the data when asked</param>
         public void RegisterProvider<T>(string commsName, Func<string, T> getDataFunc) where T : class
         {
             if (_providers.ContainsKey(commsName))
