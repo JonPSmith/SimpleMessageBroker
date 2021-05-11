@@ -25,7 +25,7 @@ namespace Test
             var broker = new MessageBroker();
 
             //ATTEMPT
-            broker.RegisterProvider("ClassToSend", x => new ClassToSend(x));
+            broker.RegisterGetter("ClassToSend", x => new ClassToSend(x));
             var result = broker.AskFor<ClassToSend>("ClassToSend", "hello");
 
             //VERIFY
@@ -40,7 +40,7 @@ namespace Test
             var broker = new MessageBroker();
 
             //ATTEMPT
-            broker.RegisterProvider("ClassToSend", async x =>
+            broker.RegisterGetter("ClassToSend", async x =>
             {
                 await Task.Delay(1);
                 return new ClassToSend(x);
@@ -69,11 +69,11 @@ namespace Test
         {
             //SETUP
             var broker = new MessageBroker();
-            broker.RegisterProvider("ClassToSend", x => new ClassToSend(x));
+            broker.RegisterGetter("ClassToSend", x => new ClassToSend(x));
             broker.AskFor<ClassToSend>("ClassToSend", "hello");
 
             //ATTEMPT
-            broker.RemoveProvider("ClassToSend");
+            broker.RemoveGetter("ClassToSend");
             var ex = Assert.Throws<ArgumentException>(() => broker.AskFor<ClassToSend>("ClassToSend", "hello"));
 
             //VERIFY
@@ -85,7 +85,7 @@ namespace Test
         {
             //SETUP
             var broker = new MessageBroker();
-            broker.RegisterProvider("ClassToSend", x => new ClassToSend(DateTime.UtcNow.ToString("O")));
+            broker.RegisterGetter("ClassToSend", x => new ClassToSend(DateTime.UtcNow.ToString("O")));
 
             //ATTEMPT
             var result1 = broker.AskFor<ClassToSend>("ClassToSend");
@@ -124,7 +124,7 @@ namespace Test
             var broker = new MessageBroker();
 
             //ATTEMPT
-            broker.RegisterProvider("DiffClasses", x => new Class1(999, x));
+            broker.RegisterGetter("DiffClasses", x => new Class1(999, x));
             var result = broker.AskFor<Class2>("DiffClasses", "hello");
 
             //VERIFY
@@ -146,7 +146,7 @@ namespace Test
             var broker = new MessageBroker();
 
             //ATTEMPT
-            broker.RegisterProvider("DiffClasses", x => new Class1(999, x));
+            broker.RegisterGetter("DiffClasses", x => new Class1(999, x));
             var result = broker.AskFor<Class3>("DiffClasses", "hello");
 
             //VERIFY

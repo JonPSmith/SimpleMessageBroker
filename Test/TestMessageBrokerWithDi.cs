@@ -29,7 +29,7 @@ namespace Test
 
             public BrokerProvider(IMessageBroker messageBroker)
             {
-                messageBroker.RegisterProvider("Test", _ => SendsThis);
+                messageBroker.RegisterGetter("Test", _ => SendsThis);
             }
 
             public void SetData(string data)

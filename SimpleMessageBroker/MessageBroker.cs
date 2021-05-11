@@ -24,7 +24,7 @@ namespace SimpleMessageBroker
         /// <typeparam name="T">The type </typeparam>
         /// <param name="commsName">The name of the communication link</param>
         /// <param name="getDataFunc">A function that will provide the data when asked</param>
-        public void RegisterProvider<T>(string commsName, Func<string, T> getDataFunc) where T : class
+        public void RegisterGetter<T>(string commsName, Func<string, T> getDataFunc) where T : class
         {
             _providers[commsName] = new ProviderInfo(typeof(T), getDataFunc);
         }
@@ -33,7 +33,7 @@ namespace SimpleMessageBroker
         /// This removes a provider for a communication link
         /// </summary>
         /// <param name="commsName">The name of the communication link</param>
-        public void RemoveProvider(string commsName)
+        public void RemoveGetter(string commsName)
         {
             _providers.Remove(commsName);
         }
