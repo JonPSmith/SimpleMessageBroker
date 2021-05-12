@@ -6,7 +6,7 @@ I haven't released this as a NuGet as I expect there is ask/get Message Broker t
 
 MIT license.
 
-## Example usage
+## Example of simple usage
 
 ```c#
 var broker = new MessageBroker(null);
@@ -21,9 +21,11 @@ broker.RegisterGetter("link-name",
 var result = broker.AskFor<ClassToSend>("link-name", "hello");
 ```
 
+## Example of usage with DI
+
 Typically you would register as a singleton (that's important) with your DI provider. Then you should call `RegisterGetter` for all the getter methods you want to register.
 
-If your getter needs to use services provided by DI, then you should the `RegisterGetterService` approach. This will 
+You can register a getter directly, but if your getter needs to use services provided by DI, then you should the `RegisterGetterService` approach. This will create a scoped instance of your class to get the data and then dispose of it.
 
 ```c#
 
