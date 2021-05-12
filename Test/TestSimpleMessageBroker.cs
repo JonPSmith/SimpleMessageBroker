@@ -22,7 +22,7 @@ namespace Test
         public void TestRegisterAsk()
         {
             //SETUP
-            var broker = new MessageBroker();
+            var broker = new MessageBroker(null);
 
             //ATTEMPT
             broker.RegisterGetter("ClassToSend", x => new ClassToSend(x));
@@ -37,7 +37,7 @@ namespace Test
         public async Task TestRegisterAsyncValue()
         {
             //SETUP
-            var broker = new MessageBroker();
+            var broker = new MessageBroker(null);
 
             //ATTEMPT
             broker.RegisterGetter("ClassToSend", async x =>
@@ -55,7 +55,7 @@ namespace Test
         public void TestAskNoRegister()
         {
             //SETUP
-            var broker = new MessageBroker();
+            var broker = new MessageBroker(null);
 
             //ATTEMPT
             var ex = Assert.Throws<ArgumentException>(() => broker.AskFor<ClassToSend>("ClassToSend", "hello"));
@@ -68,7 +68,7 @@ namespace Test
         public void TestRemoveProvider()
         {
             //SETUP
-            var broker = new MessageBroker();
+            var broker = new MessageBroker(null);
             broker.RegisterGetter("ClassToSend", x => new ClassToSend(x));
             broker.AskFor<ClassToSend>("ClassToSend", "hello");
 
@@ -84,7 +84,7 @@ namespace Test
         public void TestRegisterAskEachDifferent()
         {
             //SETUP
-            var broker = new MessageBroker();
+            var broker = new MessageBroker(null);
             broker.RegisterGetter("ClassToSend", x => new ClassToSend(DateTime.UtcNow.ToString("O")));
 
             //ATTEMPT
@@ -121,7 +121,7 @@ namespace Test
         public void TestRegisterAskWithTypeChange()
         {
             //SETUP
-            var broker = new MessageBroker();
+            var broker = new MessageBroker(null);
 
             //ATTEMPT
             broker.RegisterGetter("DiffClasses", x => new Class1(999, x));
@@ -143,7 +143,7 @@ namespace Test
         public void TestRegisterAskTypeHasValueNotInProviderType()
         {
             //SETUP
-            var broker = new MessageBroker();
+            var broker = new MessageBroker(null);
 
             //ATTEMPT
             broker.RegisterGetter("DiffClasses", x => new Class1(999, x));

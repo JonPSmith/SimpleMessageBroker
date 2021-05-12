@@ -18,52 +18,48 @@ namespace Test
             public string Data { get; }
         }
 
-        private interface IBrokerProvider
+        private interface IGetService : IGetterProvider {}
+
+        private class GetService : IGetService
         {
-            void SetData(string data);
-        }
-
-        private class BrokerProvider : IBrokerProvider
-        {
-            public ClassToSend SendsThis { get; private set; }
-
-            public BrokerProvider(IMessageBroker messageBroker)
+            public object GetData(string dataString)
             {
-                messageBroker.RegisterGetter("Test", _ => SendsThis);
-            }
-
-            public void SetData(string data)
-            {
-                SendsThis = new ClassToSend(data);
+                return new ClassToSend(dataString);
             }
         }
 
         [Fact]
-        public void TestRegisterMultipleTimes()
+        public void TestIMessageBrokerCreatedWithDi()
         {
             //SETUP
             var serviceCollection = new ServiceCollection();
-            serviceCollection.AddSingleton<IMessageBroker>(new MessageBroker());
-            serviceCollection.AddTransient<IBrokerProvider, BrokerProvider>();
+            serviceCollection.AddSingleton<IMessageBroker, MessageBroker>();
+            serviceCollection.AddTransient<IGetService, GetService>();
             var diProvider = serviceCollection.BuildServiceProvider();
 
-            var broker = diProvider.GetRequiredService<IMessageBroker>();
 
             //ATTEMPT
-            using (var scope = diProvider.CreateScope())
-            {
-                var services = scope.ServiceProvider;
-                diProvider.GetRequiredService<IBrokerProvider>().SetData("hello");
-            }
-            using (var scope = diProvider.CreateScope())
-            {
-                var services = scope.ServiceProvider;
-                diProvider.GetRequiredService<IBrokerProvider>().SetData("goodbye");
-            }
-
+            var broker = diProvider.GetRequiredService<IMessageBroker>();
 
             //VERIFY
-            Assert.Equal("goodbye", broker.AskFor<ClassToSend>("Test").Data);
+        }
+
+        [Fact]
+        public void TestRegisterGetterService()
+        {
+            //SETUP
+            var serviceCollection = new ServiceCollection();
+            serviceCollection.AddSingleton<IMessageBroker, MessageBroker>();
+            serviceCollection.AddTransient<IGetService, GetService>();
+            var diProvider = serviceCollection.BuildServiceProvider();
+
+            //ATTEMPT
+            var broker = diProvider.GetRequiredService<IMessageBroker>();
+            broker.RegisterGetterService<ClassToSend, IGetService>("Test");
+
+            //VERIFY
+            var result = broker.AskFor<ClassToSend>("Test", "XXX").Data;
+            Assert.Equal("XXX", result);
         }
 
     }
