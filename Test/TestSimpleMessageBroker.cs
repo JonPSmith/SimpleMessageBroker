@@ -42,7 +42,7 @@ namespace Test
             //ATTEMPT
             broker.RegisterGetter("ClassToSend", async x =>
             {
-                await Task.Delay(1);
+                await Task.Delay(1); 
                 return new ClassToSend(x);
             });
             var result = broker.AskFor<ClassToSend>("ClassToSend", "hello");
