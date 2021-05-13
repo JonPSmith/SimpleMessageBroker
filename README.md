@@ -1,8 +1,10 @@
-# Simple ask/get Message Broker
+# Simple request/reply Message Broker
 
-For my series of articles on [modular monolith architecture](https://www.thereformedprogrammer.net/evolving-modular-monoliths-1-an-architecture-for-net/) I needed a message broker that could pass data between isolated sections of my modular monolith. I couldn't find a message broker that worked like a method call (most message broker use the publish/listen approach), so I build a simple  ask/get message broker.
+For my series of articles on [modular monolith architecture](https://www.thereformedprogrammer.net/evolving-modular-monoliths-1-an-architecture-for-net/) I needed a request/reply message broker that could pass data between isolated sections of my modular monolith.
 
-I haven't released this as a NuGet as I expect there is ask/get Message Broker that I haven't found yet. If you know of one please contact me via the [Contact page](https://www.thereformedprogrammer.net/contact/) in my web site.
+At first I couldn't find a message broker that worked like a method call (most message broker use the publish/listen approach), so I build a simple request/reply message broker, but I now have found a possible request/reply broker in RabbitMQ (but it comes with a lot of other features I don't need).
+
+RabbitMQ has a [remote procedure call feature](https://www.rabbitmq.com/tutorials/tutorial-six-dotnet.html) that uses a queue, but [this page](https://www.rabbitmq.com/direct-reply-to.html) shows how to tun off the queue.
 
 MIT license.
 
@@ -41,8 +43,8 @@ See the `TestMessageBrokerWithDi` unit tests for more information.
 
 ## Current features
 
-- ask/get for the same class
-- ask/get for differnet classes by using json serialize/deserialize to map the get type to the ask type.
+- request/reply for the same class
+- request/reply for differnet classes by using json serialize/deserialize to map the get type to the ask type.
 - Add register interface and create an instance (via DI) of the Getter when `AskFor` method is called.
 
 ## Possible improvments
